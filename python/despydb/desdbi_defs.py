@@ -1,8 +1,8 @@
 #!/usr/bin/env python
-# $Id: coreutils_defs.py 25300 2014-08-14 16:06:09Z mgower $
-# $Rev:: 25300                            $:  # Revision of last commit.
-# $LastChangedBy:: mgower                 $:  # Author of last commit.
-# $LastChangedDate:: 2014-08-14 11:06:09 #$:  # Date of last commit.
+# $Id$
+# $Rev::                                  $:  # Revision of last commit.
+# $LastChangedBy::                        $:  # Author of last commit.
+# $LastChangedDate::                      $:  # Date of last commit.
 
 # cx_Oracle indexes for cursor.description sequences
 COL_NAME = 0

@@ -1,7 +1,7 @@
-# $Id: oracon.py 16581 2014-01-06 19:17:19Z donaldp $
-# $Rev:: 16581                            $:  # Revision of last commit.
-# $LastChangedBy:: donaldp                $:  # Author of last commit.
-# $LastChangedDate:: 2014-01-06 13:17:19 #$:  # Date of last commit.
+# $Id$
+# $Rev::                                  $:  # Revision of last commit.
+# $LastChangedBy::                        $:  # Author of last commit.
+# $LastChangedDate::                      $:  # Date of last commit.
 
 """
     Define cx_Oracle-specific database access methods
@@ -21,7 +21,7 @@
 
 """
 
-__version__ = "$Rev: 16581 $"
+__version__ = "$Rev$"
 
 import datetime
 import socket

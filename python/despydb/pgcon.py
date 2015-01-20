@@ -1,7 +1,7 @@
-# $Id: pgcon.py 16548 2013-12-19 20:08:02Z mgower $
-# $Rev:: 16548                            $:  # Revision of last commit.
-# $LastChangedBy:: mgower                 $:  # Author of last commit.
-# $LastChangedDate:: 2013-12-19 14:08:02 #$:  # Date of last commit.
+# $Id$
+# $Rev::                                  $:  # Revision of last commit.
+# $LastChangedBy::                        $:  # Author of last commit.
+# $LastChangedDate::                      $:  # Date of last commit.
 
 """
     Define psycopg2-specific database access methods
@@ -22,7 +22,7 @@
 
 """
 
-__version__ = "$Rev: 16548 $"
+__version__ = "$Rev$"
 
 import datetime
 import random
