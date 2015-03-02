@@ -570,28 +570,6 @@ class DesDbi (object):
         """
         return self.con.get_current_timestamp_str()
 
-
-
-
-
-    def gen_file_query(self, query, debug=3):
-        sql = self.create_query_string(query) 
-        if debug >= 3:
-            print "sql =", sql
-
-        curs = self.cursor()
-        curs.execute(sql)
-        desc = [d[0].lower() for d in curs.description]
-
-        result = []
-        for line in curs:
-            d = dict(zip(desc, line))
-            result.append(d)
-
-        curs.close()
-        return result
-
-
     def query_results_dict(self, sql, tkey):
         curs = self.cursor()
         curs.execute(sql)
