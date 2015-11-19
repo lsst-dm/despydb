@@ -65,7 +65,7 @@ class DesDbi (object):
     closed without an attempt query the table.
     """
 
-    def __init__(self, desfile=None, section=None):
+    def __init__(self, desfile=None, section=None, retry=False):
         """
         Create an interface object for a DES database.
 
@@ -76,7 +76,7 @@ class DesDbi (object):
 
         """
 
-        self.configdict = serviceaccess.parse(desfile,section,'DB')
+        self.configdict = serviceaccess.parse(desfile,section,'DB',retry)
         self.type       = self.configdict['type']
 
         serviceaccess.check (self.configdict, 'DB')
@@ -90,7 +90,9 @@ class DesDbi (object):
         else:
             raise errors.UnknownDBTypeError (self.type)
 
-        MAXTRIES = 5
+        MAXTRIES = 1
+        if retry:
+            MAXTRIES = 5
         TRY_DELAY = 10 # seconds
         trycnt = 0
         done = False
