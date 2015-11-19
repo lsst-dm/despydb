@@ -29,7 +29,7 @@ def testing():
 
 # The main call
 setup(name='despydb',
-      version ='2.0.0',
+      version ='2.0.1',
       license = "GPL",
       description = "Provide a dialect-neutral interface to DES databases",
       author = "The National Center for Supercomputing Applications (NCSA)",
