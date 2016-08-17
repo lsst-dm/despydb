@@ -105,10 +105,12 @@ class DesDbi (object):
             except Exception as e:
                 lasterr = str(e).strip()
                 timestamp = time.strftime("%x %X", time.localtime())
-                print "%s: Error when trying to connect to database: %s" % (timestamp,lasterr)
+                print "%s: Could not connect to database, try %i/%i" % (timestamp, trycnt, MAXTRIES)
                 if trycnt < MAXTRIES:
                     print "\tRetrying...\n"
                     time.sleep(TRY_DELAY)
+                else:
+                    print "  Error, could not connect to the database after %i retries: %s" % (MAXTRIES, lasterr)
 
         if not done:
             print "Exechost:", socket.gethostname()
