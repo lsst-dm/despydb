@@ -1,20 +1,18 @@
 #!/usr/bin/env python
 
-"""
-    Provide a dialect-neutral interface to DES databases.
+"""Provide a dialect-neutral interface to DES databases.
 
-    Classes:
-        DesDbi - Connects to a Postgresql or Oracle instance of a DES database
-                 upon instantiation and the resulting object provides an
-                 interface based on the Python DB API with extensions to allow
-                 interaction with the database in a dialect-neutral manner.
+Classes:
+    DesDbi - Connects to a Postgresql or Oracle instance of a DES database
+             upon instantiation and the resulting object provides an
+             interface based on the Python DB API with extensions to allow
+             interaction with the database in a dialect-neutral manner.
 
-    Developed at: 
-    The National Center for Supercomputing Applications (NCSA).
+Developed at:
+The National Center for Supercomputing Applications (NCSA).
 
-    Copyright (C) 2011 Board of Trustees of the University of Illinois. 
-    All rights reserved.
-
+Copyright (C) 2011 Board of Trustees of the University of Illinois.
+All rights reserved.
 """
 
 __version__ = "2.0.0"
@@ -33,8 +31,7 @@ from . import desdbi_defs as defs
 
 
 class DesDbi (object):
-    """
-    Provide a dialect-neutral interface to a DES database.
+    """Provide a dialect-neutral interface to a DES database.
 
     During Instantiation of this class, service access parameters are found and
     a connection opened to the database identified.  The resulting object
@@ -62,16 +59,13 @@ class DesDbi (object):
     """
 
     def __init__(self, desfile=None, section=None, retry=False):
-        """
-        Create an interface object for a DES database.
+        """Create an interface object for a DES database.
 
         The DES services file and/or section contained therein may be specified
         via the desfile and section arguments.  When omitted default values
         will be used as defined in DESDM-3.  A tag of "db" will be used in all
         cases.
-
         """
-
         self.configdict = serviceaccess.parse(desfile, section, 'DB', retry)
         self.type = self.configdict['type']
 
@@ -119,19 +113,17 @@ class DesDbi (object):
             print("Successfully connected to database after retrying.")
 
     def __enter__(self):
-        "Enable the use of this class as a context manager."
-
+        """Enable the use of this class as a context manager.
+        """
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):
-        """
-        Shutdown the connection to the database when context ends.
+        """Shutdown the connection to the database when context ends.
 
         Commit any pending transaction if no exception is raised; otherwise,
         rollback that transaction.  In either case, close the database
         connection.
         """
-
         if exc_type is None:
             self.commit()
         else:
@@ -142,8 +134,7 @@ class DesDbi (object):
         return False
 
     def autocommit(self, state=None):
-        """
-        Return and optionally set autocommit mode.
+        """Return and optionally set autocommit mode.
 
         If provided state is Boolean, set connection's autocommit mode
         accordingly.
@@ -158,20 +149,17 @@ class DesDbi (object):
         return a
 
     def close(self):
-        """
-        Close the current connection, disabling any open cursors.
+        """Close the current connection, disabling any open cursors.
         """
         return self.con.close()
 
     def commit(self):
-        """
-        Commit any pending transaction.
+        """Commit any pending transaction.
         """
         return self.con.commit()
 
     def cursor(self, fetchsize=None):
-        """
-        Return a Cursor object for operating on the connection.
+        """Return a Cursor object for operating on the connection.
 
         The not yet implemented fetchsize argument would cause PostgreConnection
         to generate a psycopg2 named cursor configured to fetch the indicated
@@ -182,8 +170,8 @@ class DesDbi (object):
         return self.con.cursor(fetchsize)
 
     def get_column_metadata(self, table_name):
-        """
-        Return a dictionary of 7-item sequences, with lower case column name keys.
+        """Return a dictionary of 7-item sequences, with lower case column name keys.
+
         The sequence values are: 
         (name, type, display_size, internal_size, precision, scale, null_ok) 
         Constants are defined for the sequence indexes in coreutils_defs.py
@@ -203,8 +191,7 @@ class DesDbi (object):
         return retval
 
     def get_column_lengths(self, table_name):
-        """
-        Return a dictionary of column_name = column_length for the given table
+        """Return a dictionary of column_name = column_length for the given table.
         """
         meta = self.get_column_metadata(table_name)
         res = {}
@@ -213,8 +200,7 @@ class DesDbi (object):
         return res
 
     def get_column_names(self, table_name):
-        """
-        Return a sequence containing the column names of specified table.
+        """Return a sequence containing the column names of specified table.
 
         Column names are converted to lowercase.
         """
@@ -223,14 +209,12 @@ class DesDbi (object):
         return column_names
 
     def get_column_types(self, table_name):
-        """
-        Return a dictionary of python types indexed by column name for a table.
+        """Return a dictionary of python types indexed by column name for a table.
         """
         return self.con.get_column_types(table_name)
 
     def get_named_bind_string(self, name):
-        """
-        Return a named bind (substitution) string.
+        """Return a named bind (substitution) string.
 
         Returns a dialect-specific bind string for use with SQL statement
         arguments specified by name.
@@ -243,8 +227,7 @@ class DesDbi (object):
         return self.con.get_named_bind_string(name)
 
     def get_positional_bind_string(self, pos=1):
-        """
-        Return a positional bind (substitution) string.
+        """Return a positional bind (substitution) string.
 
         Returns a dialect-specific bind string for use with SQL statement
         arguments specified by position.
@@ -257,8 +240,7 @@ class DesDbi (object):
         return self.con.get_positional_bind_string(pos)
 
     def get_regex_clause(self, target, pattern, case_sensitive=True):
-        """
-        Return a dialect-specific regular expression matching clause.
+        """Return a dialect-specific regular expression matching clause.
 
         Construct a dialect-specific SQL Boolean expression that matches a
         provided target with a provided regular expression string.  The target
@@ -287,8 +269,7 @@ class DesDbi (object):
         return self.get_regex_format(case_sensitive) % d
 
     def get_regex_format(self, case_sensitive=True):
-        """
-        Return a format string for constructing a regular expression clause.
+        """Return a format string for constructing a regular expression clause.
 
         The returned format string contains two python named-substitution
         strings:
@@ -321,8 +302,7 @@ class DesDbi (object):
         return self.con.get_regex_format(case_sensitive)
 
     def get_seq_next_clause(self, seqname):
-        """
-        Return an SQL expression that extracts the next value from a sequence.
+        """Return an SQL expression that extracts the next value from a sequence.
 
         Construct and return a dialect-specific SQL expression that, when
         evaluated, will extract the next value from the specified sequence.
@@ -335,8 +315,7 @@ class DesDbi (object):
         return self.con.get_seq_next_clause(seqname)
 
     def get_seq_next_value(self, seqname):
-        """
-        Return the next value from the specified sequence.
+        """Return the next value from the specified sequence.
 
         Execute a dialect-specific expression to extract the next value from
         the specified sequence and return that value.
@@ -350,8 +329,7 @@ class DesDbi (object):
         return self.exec_sql_expression(expr)[0]
 
     def insert_many(self, table, columns, rows):
-        """
-        Insert a sequence of rows into the indicated database table.
+        """Insert a sequence of rows into the indicated database table.
 
         Arguments:
             table   Name of the table into which data should be inserted.
@@ -384,8 +362,7 @@ class DesDbi (object):
             curs.close()
 
     def insert_many_indiv(self, table, columns, rows):
-        """
-        Insert a sequence of rows into the indicated database table.
+        """Insert a sequence of rows into the indicated database table.
 
         Arguments:
             table   Name of the table into which data should be inserted.
@@ -398,7 +375,6 @@ class DesDbi (object):
         columns can be any iterable that returns the column names and the set
         of keys for each row must match the set of column names.
         """
-
         if len(rows) == 0:
             return
         if hasattr(rows[0], 'keys'):
@@ -427,8 +403,7 @@ class DesDbi (object):
 
     def query_simple(self, from_, cols='*', where=None, orderby=None,
                      params=None, rowtype=dict):
-        """
-        Issue a simple query and return results.
+        """Issue a simple query and return results.
 
         Arguments:
             from_       a string containing the name of a table or view or some
@@ -469,7 +444,6 @@ class DesDbi (object):
                [{"col1": 23, "col2": "ABC"}, {"col1": 45, "col2": "AAA"}]
 
         """
-
         if not from_:
             raise TypeError('A table name or other from expression is '
                             'required.')
@@ -527,15 +501,12 @@ class DesDbi (object):
         return self.type == 'oracle'
 
     def rollback(self):
+        """Rollback the current transaction.
         """
-        Rollback the current transaction.
-        """
-
         return self.con.rollback()
 
     def sequence_drop(self, seq_name):
-        "Drop sequence; do not generate error if it doesn't exist."
-
+        """Drop sequence; do not generate error if it doesn't exist."""
         self.con.sequence_drop(seq_name)
 
     def __str__(self):
@@ -544,8 +515,8 @@ class DesDbi (object):
         return '%s' % (copydict)
 
     def table_drop(self, table):
-        "Drop table; do not generate error if it doesn't exist."
-
+        """Drop table; do not generate error if it doesn't exist.
+        """
         self.con.table_drop(table)
 
     def from_dual(self):
@@ -561,8 +532,7 @@ class DesDbi (object):
         return "'%s'" % str(value).replace("'", "''")
 
     def get_current_timestamp_str(self):
-        """
-        return string for current timestamp
+        """Return string for current timestamp.
         """
         return self.con.get_current_timestamp_str()
 
@@ -580,8 +550,8 @@ class DesDbi (object):
         return result
 
     def basic_insert_row(self, table, row):
-        """ Insert a row into the table """
-
+        """Insert a row into the table.
+        """
         ctstr = self.get_current_timestamp_str()
 
         cols = list(row.keys())
@@ -610,8 +580,8 @@ class DesDbi (object):
             raise
 
     def basic_update_row(self, table, updatevals, wherevals):
-        """ Update a row in a table """
-
+        """Update a row in a table.
+        """
         ctstr = self.get_current_timestamp_str()
 
         params = {}

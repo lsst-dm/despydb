@@ -1,35 +1,34 @@
 #!/usr/bin/env python
 
-"""
-    Test DesDbi class via unittest
+"""Test DesDbi class via unittest
 
-    Synopsis:
-        test dbtype [unittest_parameters]
+Synopsis:
+    test dbtype [unittest_parameters]
 
-    dbtype must be either "oracle" or "postgres".  A DES services file will be
-    found using methods defined in DESDM-3.  The file is expected to contain a
-    section named according to dbtype:
+dbtype must be either "oracle" or "postgres".  A DES services file will be
+found using methods defined in DESDM-3.  The file is expected to contain a
+section named according to dbtype:
 
-        oracle      db-oracle-unittest
-        postgres    db-postgres-unittest
+    oracle      db-oracle-unittest
+    postgres    db-postgres-unittest
 
-    The database user thus identified should have permission to create
-    sequences and tables within its own schema.
+The database user thus identified should have permission to create
+sequences and tables within its own schema.
 
-    Any unittest_parameters are passed on to the python unittest module.
+Any unittest_parameters are passed on to the python unittest module.
 
-    Classes:
-        DesDbiTest - Simulates a project-specific DesDbi subclass with its
-                     its own database access extensions.  In this case, the
-                     extensions are useful for the test cases.
+Classes:
+    DesDbiTest - Simulates a project-specific DesDbi subclass with its
+                 its own database access extensions.  In this case, the
+                 extensions are useful for the test cases.
 
-        TestDesDbi - Defines the test cases.
+    TestDesDbi - Defines the test cases.
 
-    Developed at: 
-    The National Center for Supercomputing Applications (NCSA).
-  
-    Copyright (C) 2012 Board of Trustees of the University of Illinois. 
-    All rights reserved.
+Developed at:
+The National Center for Supercomputing Applications (NCSA).
+
+Copyright (C) 2012 Board of Trustees of the University of Illinois.
+All rights reserved.
 
 """
 
@@ -45,8 +44,7 @@ _dbType = None
 
 
 class DesDbiTest (despydb.DesDbi, despydb.DBTestMixin):
-    """
-    Define a few methods to simulate expected usage of DesDbi.
+    """Define a few methods to simulate expected usage of DesDbi.
 
     The DesDbi class is expected to be subclassed by various projects with
     database access methods necessary for each project defined in that
@@ -72,14 +70,12 @@ class DesDbiTest (despydb.DesDbi, despydb.DBTestMixin):
         return res
 
     def run_autocommit(self, autocommit):
-        """
-        Test autocommit using the specified mode.
+        """Test autocommit using the specified mode.
 
         autocommit parameter may be Boolean to explicitly set the autocommit
         mode for the test or None to implicitly use current mode with the
         expectation that it is off.
         """
-
         # Create (or recreate) test table.
         table = 'test_autocommit'
 
@@ -138,8 +134,7 @@ class DesDbiTest (despydb.DesDbi, despydb.DBTestMixin):
 
 
 class TestDesDbi (unittest.TestCase):
-    """
-    Test DesDbi class.
+    """Test DesDbi class.
 
     Provided methods test the ability to create a connection and interact with
     a DES database.
@@ -177,24 +172,27 @@ class TestDesDbi (unittest.TestCase):
         pass
 
     def test_autocommit_default(self):
-        "Autocommit mode should be off by default."
+        """Autocommit mode should be off by default.
+        """
         res = self.dbh.run_autocommit(None)
         self.assertIsNone(res)
 
     def test_autocommit_off(self):
-        "Autocommit mode should be off when explicitly disabled."
+        """Autocommit mode should be off when explicitly disabled.
+        """
         res = self.dbh.run_autocommit(False)
         self.assertIsNone(res)
 
     def test_autocommit_on(self):
-        "Autocommit mode should be on when explicitly enabled."
+        """Autocommit mode should be on when explicitly enabled.
+        """
         res = self.dbh.run_autocommit(True)
         self.assertIsNotNone(res)
         self.assertEqual(res[0], 4)
 
     def test_get_column_names(self):
-        "get_column_names() should return the expected column names."
-
+        """get_column_names() should return the expected column names.
+        """
         table = 'test_table_cols'
         columns = ['col1', 'col2', 'col3']
 
@@ -208,8 +206,8 @@ class TestDesDbi (unittest.TestCase):
         self.assertEqual(res, columns)
 
     def test_get_column_types(self):
-        "get_column_types() should return the expected python types."
-
+        """get_column_types() should return the expected python types.
+        """
         table = 'test_table_cols'
 
         columnPythonTypes = {'col1': float,
@@ -235,8 +233,8 @@ class TestDesDbi (unittest.TestCase):
         self.assertEqual(res, columnPythonTypes)
 
     def test_insert_many_dict(self):
-        "insert_many() should insert rows given as a list of dictionaries."
-
+        """insert_many() should insert rows given as a list of dictionaries.
+        """
         table = 'test_insert'
         columns = ['col1', 'col2', 'col3']
 
@@ -257,8 +255,8 @@ class TestDesDbi (unittest.TestCase):
         self.assertEqual(res, out_vals)
 
     def test_insert_many_list(self):
-        "insert_many() should insert rows given as a list of lists."
-
+        """insert_many() should insert rows given as a list of lists.
+        """
         table = 'test_insert'
         columns = ['col1', 'col2', 'col3']
 
@@ -276,8 +274,8 @@ class TestDesDbi (unittest.TestCase):
         self.assertEqual(res, out_values)
 
     def test_insert_many_tuple(self):
-        "insert_many() should insert rows given as a list of tuples."
-
+        """insert_many() should insert rows given as a list of tuples.
+        """
         table = 'test_insert'
         columns = ['col1', 'col2', 'col3']
         values = [(1, 2, 3), (4, 5, 6), (7, 8, 9)]
@@ -293,8 +291,8 @@ class TestDesDbi (unittest.TestCase):
         self.assertEqual(res, values)
 
     def test_named_bind_string(self):
-        "Returned named bind strings should work with a dictionary."
-
+        """Returned named bind strings should work with a dictionary.
+        """
         binds = ['v1', 'v2', 'v3']
 
         qry = self.dbh.get_expr_exec_format() % ','.join(
@@ -309,8 +307,8 @@ class TestDesDbi (unittest.TestCase):
             self.dbh.rollback()
 
     def test_positional_bind_string(self):
-        "Returned positional bind strings should work with a sequence."
-
+        """Returned positional bind strings should work with a sequence.
+        """
         vals = (3, 2, 1)
         qry = self.dbh.get_expr_exec_format() % ','.join(
             [self.dbh.get_positional_bind_string() for v in vals])
@@ -324,8 +322,8 @@ class TestDesDbi (unittest.TestCase):
             self.dbh.rollback()
 
     def test_query_simple(self):
-        "Simple query with defaults."
-
+        """Simple query with defaults.
+        """
         tab = 'query_test'
         cols = ['col1', 'col2']
         rows_in = [{'col1': r[0], 'col2':r[1]} for r in [(1, 2), (2, 4), (3, 6)]]
@@ -336,8 +334,8 @@ class TestDesDbi (unittest.TestCase):
             self.assertEqual(rows_in, rows_out)
 
     def test_query_simple_colstr(self):
-        "Simple query using a column string and aliases."
-
+        """Simple query using a column string and aliases.
+        """
         tab = 'query_test'
         cols = ['col1', 'col2']
         rows_in = [[1, 2], [2, 4], [3, 6]]
@@ -352,8 +350,8 @@ class TestDesDbi (unittest.TestCase):
             self.assertEqual(rows_expected, rows_out)
 
     def test_query_simple_custom_rowtype(self):
-        "Simple query using a custom rowtype."
-
+        """Simple query using a custom rowtype.
+        """
         tab = 'query_test'
         cols = ['col1', 'col2']
         rows_in = [(1, 2), (2, 4), (3, 6)]
@@ -366,8 +364,8 @@ class TestDesDbi (unittest.TestCase):
             self.assertEqual(rows_expected, rows_out)
 
     def test_query_simple_param_dict(self):
-        "Simple query using named bind string."
-
+        """Simple query using named bind string.
+        """
         tab = 'query_test'
         cols = ['col1', 'col2']
         colstr = self.dbh.get_named_bind_string('tst1')
@@ -382,9 +380,8 @@ class TestDesDbi (unittest.TestCase):
             self.assertEqual(rows_expected, rows_out)
 
     def test_query_simple_param_seq(self):
-        "Simple query using positional bind string."
-
-        tab = 'query_test'
+        """Simple query using positional bind string.
+        """
         cols = ['col1', 'col2']
         colstr = self.dbh.get_positional_bind_string()
         rows_in = [(1, 2), (2, 4), (3, 6)]
@@ -398,8 +395,8 @@ class TestDesDbi (unittest.TestCase):
             self.assertEqual(rows_expected, rows_out)
 
     def test_query_simple_tuple(self):
-        "Simple query retrieving tuples."
-
+        """Simple query retrieving tuples.
+        """
         tab = 'query_test'
         cols = ['col1', 'col2']
         rows_in = [(1, 2), (2, 4), (3, 6)]
@@ -410,8 +407,8 @@ class TestDesDbi (unittest.TestCase):
             self.assertEqual(set(rows_in), set(rows_out))
 
     def test_query_simple_list(self):
-        "Simple query retrieving tuples."
-
+        """Simple query retrieving tuples.
+        """
         tab = 'query_test'
         cols = ['col1', 'col2']
         rows_in = [[1, 2], [2, 4], [3, 6]]
@@ -423,8 +420,8 @@ class TestDesDbi (unittest.TestCase):
             self.assertEqual(rows_in, rows_out)
 
     def test_query_simple_where_seq(self):
-        "Simple query using a sequence of where expressions."
-
+        """Simple query using a sequence of where expressions.
+        """
         tab = 'query_test'
         cols = ['col1', 'col2']
         rows_in = [[1, 2], [2, 4], [2, 4], [3, 6]]
@@ -438,8 +435,8 @@ class TestDesDbi (unittest.TestCase):
             self.assertEqual(rows_expected, rows_out)
 
     def test_query_simple_where_str(self):
-        "Simple query using a column string and aliases."
-
+        """Simple query using a column string and aliases.
+        """
         tab = 'query_test'
         cols = ['col1', 'col2']
         rows_in = [[1, 2], [2, 4], [3, 6]]
@@ -453,14 +450,14 @@ class TestDesDbi (unittest.TestCase):
             self.assertEqual(rows_expected, rows_out)
 
     def test_regex_bad_case_sensitivity(self):
-        "An invalid case sensitivity flag should be reported."
-
+        """An invalid case sensitivity flag should be reported.
+        """
         with self.assertRaises(despydb.UnknownCaseSensitiveError):
             self.dbh.get_regex_clause("'ABC'", 'a.*', 'F')
 
     def test_regex_case_insensitive_match(self):
-        "Case-insensitive regular expressions should work."
-
+        """Case-insensitive regular expressions should work.
+        """
         cursor = self.dbh.cursor()
         try:
             expr = self.dbh.get_regex_clause("'ABC'", 'a.*', False)
@@ -475,8 +472,8 @@ class TestDesDbi (unittest.TestCase):
             cursor.close()
 
     def test_regex_case_sensitive_match(self):
-        "Case-sensitive regular expressions should work."
-
+        """Case-sensitive regular expressions should work.
+        """
         cursor = self.dbh.cursor()
         try:
             expr = self.dbh.get_regex_clause("'abc'", 'a.*')
@@ -491,8 +488,8 @@ class TestDesDbi (unittest.TestCase):
             cursor.close()
 
     def test_regex_case_sensitive_nomatch(self):
-        "Case-sensitive regular expressions should not match the wrong case."
-
+        """Case-sensitive regular expressions should not match the wrong case.
+        """
         cursor = self.dbh.cursor()
         try:
             expr = self.dbh.get_regex_clause("'ABC'", 'a.*')
@@ -507,8 +504,8 @@ class TestDesDbi (unittest.TestCase):
             cursor.close()
 
     def test_sequence(self):
-        "Retrieving values from a sequence should work."
-
+        """Retrieving values from a sequence should work.
+        """
         seq_name = 'test_seq'
 
         with self.dbh.sequence_recreate(seq_name):
@@ -521,8 +518,8 @@ class TestDesDbi (unittest.TestCase):
                 raise
 
     def test_table_drop_exist(self):
-        "Dropping an existing table should drop the table."
-
+        """Dropping an existing table should drop the table.
+        """
         table = "test_drop"
 
         if not self.dbh.table_can_query(table):
@@ -533,8 +530,8 @@ class TestDesDbi (unittest.TestCase):
         self.assertFalse(self.dbh.table_can_query(table))
 
     def test_table_drop_notexist(self):
-        "Should be able to drop a table that doesn't exist without error."
-
+        """Should be able to drop a table that doesn't exist without error.
+        """
         table = "test_drop"
 
         # Drop twice in case the table currently exists.

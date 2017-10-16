@@ -1,34 +1,33 @@
 #!/usr/bin/env python
 
-"""
-    Test DBTestMixin class via unittest
+"""Test DBTestMixin class via unittest
 
-    Synopsis:
-        test_dbtestmixin.py dbtype [unittest_parameters]
+Synopsis:
+    test_dbtestmixin.py dbtype [unittest_parameters]
 
-    dbtype must be either "oracle" or "postgres".  A DES services file will be
-    found using methods defined in DESDM-3.  The file is expected to contain a
-    section named according to dbtype:
+dbtype must be either "oracle" or "postgres".  A DES services file will be
+found using methods defined in DESDM-3.  The file is expected to contain a
+section named according to dbtype:
 
-        oracle      db-oracle-unittest
-        postgres    db-postgres-unittest
+    oracle      db-oracle-unittest
+    postgres    db-postgres-unittest
 
-    The database user thus identified should have permission to create
-    sequences and tables within its own schema.
+The database user thus identified should have permission to create
+sequences and tables within its own schema.
 
-    Any unittest_parameters are passed on to the python unittest module.
+Any unittest_parameters are passed on to the python unittest module.
 
-    Classes:
-        DBTestMixinTest - Simulates expected use of the mixin by adding it as
-                          a parent of a subclass of DesDbi.
+Classes:
+    DBTestMixinTest - Simulates expected use of the mixin by adding it as
+                      a parent of a subclass of DesDbi.
 
-        TestDBTestMixin - Defines the test cases.
+    TestDBTestMixin - Defines the test cases.
 
-    Developed at: 
-    The National Center for Supercomputing Applications (NCSA).
-  
-    Copyright (C) 2012 Board of Trustees of the University of Illinois. 
-    All rights reserved.
+Developed at:
+The National Center for Supercomputing Applications (NCSA).
+
+Copyright (C) 2012 Board of Trustees of the University of Illinois.
+All rights reserved.
 
 """
 
@@ -40,14 +39,16 @@ import despydb
 
 
 class DBTestMixinTest (despydb.DesDbi, despydb.DBTestMixin):
-    "Define A subclass of DesDbi and DBTestMixin to be used in tests."
+    """Define A subclass of DesDbi and DBTestMixin to be used in tests.
+    """
 
     def __init__(self, *args, **kwargs):
         despydb.DesDbi.__init__(self, *args, **kwargs)
 
 
 class TestDBTestMixin (unittest.TestCase):
-    "Test the DBTestMixin class."
+    """Test the DBTestMixin class.
+    """
 
     @classmethod
     def setUpClass(cls):
@@ -81,8 +82,8 @@ class TestDBTestMixin (unittest.TestCase):
         pass
 
     def test_sequence_recreate_ctxmgr(self):
-        "sequence_recreate() should be usable as a context manager."
-
+        """sequence_recreate() should be usable as a context manager.
+        """
         test_seq = 'recreate_test'
 
         self.dbh.sequence_create(test_seq)
@@ -94,8 +95,8 @@ class TestDBTestMixin (unittest.TestCase):
         self.dbh.rollback()
 
     def test_sequence_recreate_no_ctxmgr(self):
-        "sequence_recreate() should be usable as a normal method."
-
+        """sequence_recreate() should be usable as a normal method.
+        """
         test_seq = 'recreate_test'
 
         self.dbh.sequence_recreate(test_seq)
@@ -164,8 +165,8 @@ class TestDBTestMixin (unittest.TestCase):
         self.dbh.table_drop(cpy_table)
 
     def test_table_recreate_ctxmgr(self):
-        "table_recreate() should be usable as a context manager."
-
+        """Table_recreate() should be usable as a context manager.
+        """
         test_table = 'recreate_test'
 
         self.dbh.table_create(test_table, 'col1', 'integer')
@@ -176,8 +177,8 @@ class TestDBTestMixin (unittest.TestCase):
         self.assertFalse(self.dbh.table_can_query(test_table))
 
     def test_table_recreate_no_ctxmgr(self):
-        "table_recreate() should be usable as a normal method."
-
+        """Table_recreate() should be usable as a normal method.
+        """
         test_table = 'recreate_test'
 
         self.dbh.table_recreate(test_table, 'col1', 'integer')

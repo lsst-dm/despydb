@@ -1,26 +1,25 @@
-"""
-    Define exceptions raised by coreutils.
+"""Define exceptions raised by coreutils.
 
-    Classes:
-        MissingDBId        - No database identification information found in
-                             des services section.  Subclass of Exception.
-        UnknownDBTypeError - An unknown database type found in des services
-                             section.  Subclass of NotImplementedError.
-        UnknownCaseSensitiveError 
-                             An unknown case sensitivity option was speciied.
-                             Subclass of NotImplementedError.
+Classes:
+    MissingDBId        - No database identification information found in
+                         des services section.  Subclass of Exception.
+    UnknownDBTypeError - An unknown database type found in des services
+                         section.  Subclass of NotImplementedError.
+    UnknownCaseSensitiveError
+                         An unknown case sensitivity option was speciied.
+                         Subclass of NotImplementedError.
 
-    Developed at: 
-    The National Center for Supercomputing Applications (NCSA).
+Developed at:
+The National Center for Supercomputing Applications (NCSA).
 
-    Copyright (C) 2011 Board of Trustees of the University of Illinois. 
-    All rights reserved.
-
+Copyright (C) 2011 Board of Trustees of the University of Illinois.
+All rights reserved.
 """
 
 
 class MissingDBId (Exception):
-    "Service access configuration has missing database identification."
+    """Service access configuration has missing database identification.
+    """
 
     def __init__(self, msg=None):
         if not msg:
@@ -30,7 +29,8 @@ class MissingDBId (Exception):
 
 
 class UnknownDBTypeError (NotImplementedError):
-    "Service access configuration identifies an unknown database type."
+    """Service access configuration identifies an unknown database type.
+    """
 
     def __init__(self, db_type, msg=None):
         self.db_type = db_type
@@ -41,7 +41,8 @@ class UnknownDBTypeError (NotImplementedError):
 
 
 class UnknownCaseSensitiveError (NotImplementedError):
-    "Invalid case sensitivity flag."
+    """Invalid case sensitivity flag.
+    """
 
     def __init__(self, value, msg=None):
         self.value = value

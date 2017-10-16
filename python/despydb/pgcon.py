@@ -1,20 +1,18 @@
-"""
-    Define psycopg2-specific database access methods
+"""Define psycopg2-specific database access methods
 
-    Classes:
-        PostgresConnection - Connects to a PostgreSQL instance of a DES
-                             database upon instantiation and the resulting
-                             object provides an interface based on the pscyopg2
-                             connection class with extensions to allow
-                             interaction with the database in a dialect-neutral
-                             manner.
+Classes:
+    PostgresConnection - Connects to a PostgreSQL instance of a DES
+                         database upon instantiation and the resulting
+                         object provides an interface based on the pscyopg2
+                         connection class with extensions to allow
+                         interaction with the database in a dialect-neutral
+                         manner.
 
-    Developed at: 
-    The National Center for Supercomputing Applications (NCSA).
-  
-    Copyright (C) 2012 Board of Trustees of the University of Illinois. 
-    All rights reserved.
+Developed at:
+The National Center for Supercomputing Applications (NCSA).
 
+Copyright (C) 2012 Board of Trustees of the University of Illinois.
+All rights reserved.
 """
 
 __version__ = "$Rev$"
@@ -34,8 +32,8 @@ _TYPE_MAP = None
 
 
 def _make_type_map():
-    "Populate the global _TYPE_MAP."
-
+    """Populate the global _TYPE_MAP.
+    """
     global _TYPE_MAP
     _TYPE_MAP = {}
     for code in psycopg2.extensions.string_types:
@@ -69,21 +67,17 @@ def _make_type_map():
 
 
 class PostgresConnection (pgConnection):
-    """
-    Provide psycopg2-specific implementations of canonical database methods
+    """Provide psycopg2-specific implementations of canonical database methods
 
     Refer to desdbi.py for full method documentation.
     """
 
     def __init__(self, access_data):
-        """
-        Initialize a PostgresConnection object
+        """Initialize a PostgresConnection object
 
         Connect the PostgresConnection instance to the database identified in
         access_data.
-
         """
-
         dsn = 'host=%s dbname=%s user=%s password=%s port=%s' % (
               access_data['server'], access_data['name'],
               access_data['user'], access_data['passwd'],
@@ -92,8 +86,8 @@ class PostgresConnection (pgConnection):
         pgConnection.__init__(self, dsn)
 
     def cursor(self, fetchsize=None):
-        "Return a psycopg2 Cursor object for operating on the connection."
-
+        """Return a psycopg2 Cursor object for operating on the connection.
+        """
         if fetchsize:
             # Tell psycopg2 to create a server-side cursor so that it will
             # return the results in batches of the indicated size instead of
@@ -109,10 +103,8 @@ class PostgresConnection (pgConnection):
         return curs
 
     def get_column_types(self, table_name):
+        """Return a dictionary of python types indexed by column name for a table.
         """
-        Return a dictionary of python types indexed by column name for a table.
-        """
-
         if _TYPE_MAP is None:
             # On the first call, build a map from some of the type codes to a
             # python type.
@@ -128,27 +120,25 @@ class PostgresConnection (pgConnection):
         return types
 
     def get_expr_exec_format(self):
-        "Return a format string for a statement to execute SQL expressions."
-
+        """Return a format string for a statement to execute SQL expressions.
+        """
         return 'SELECT %s'
 
     def get_named_bind_string(self, name):
-        "Return a named bind (substitution) string for name with psycopg2."
-
+        """Return a named bind (substitution) string for name with psycopg2.
+        """
         return "%%(%s)s" % name
 
     def get_positional_bind_string(self, pos=1):
-        "Return a positional bind (substitution) string for psycopg2."
-
+        """Return a positional bind (substitution) string for psycopg2.
+        """
         return "%s"
 
     def get_regex_format(self, case_sensitive=True):
-        """
-        Return a format string for constructing a regular expression clause.
+        """Return a format string for constructing a regular expression clause.
 
         See DesDbi class for detailed documentation.
         """
-
         # Use POSIX regular expressions
         if case_sensitive is True:
             oper = '~'
@@ -162,13 +152,13 @@ class PostgresConnection (pgConnection):
         return "(%%(target)s %s %%(pattern)s)" % oper
 
     def get_seq_next_clause(self, seqname):
-        "Return an SQL expression that extracts the next value from a sequence."
-
+        """Return an SQL expression that extracts the next value from a sequence.
+        """
         return "nextval('" + seqname + "')"
 
     def sequence_drop(self, seq_name):
-        "Drop sequence; do not generate error if it doesn't exist."
-
+        """Drop sequence; do not generate error if it doesn't exist.
+        """
         curs = self.cursor()
 
         svp = '"svp_drop_seq_%s"' % random.randint(0, 9999999)
@@ -187,8 +177,8 @@ class PostgresConnection (pgConnection):
             curs.close()
 
     def table_drop(self, table):
-        "Drop table; do not generate error if it doesn't exist."
-
+        """Drop table; do not generate error if it doesn't exist.
+        """
         curs = self.cursor()
 
         # The main reason this function exists is to allow tests to drop tables
@@ -217,7 +207,8 @@ class PostgresConnection (pgConnection):
             curs.close()
 
     def from_dual(self):
-        """ return empty string as PostgreSQL doesn't use 'from dual' """
+        """Return empty string as PostgreSQL doesn't use 'from dual'.
+        """
         return ""
 
     def get_current_timestamp_str(self):

@@ -1,32 +1,32 @@
 #!/usr/bin/env python
-"""
-Interact with an Oracle or postgres database from the shell.
+"""Interact with an Oracle or postgres database from the shell.
 
-This program makes a query and presents the result on stdout.  Queries
-can be any SQL statement.  The tool uses the db abstractions present in
-the desdm despydb pckage. These abstrations mitigate some selected
-differences in the SQL dialects spoken by Oracle and Postgres.
+This program makes a query and presents the result on stdout.  Queries can
+be any SQL statement.  The tool uses the db abstractions present in the
+desdm despydb pckage. These abstrations mitigate some selected differences
+in the SQL dialects spoken by Oracle and Postgres.
 
-The package uses the .desdmservices file  to locate the database
-service and to obtain credentials for authentication.
+The package uses the .desdmservices file  to locate the database service and
+to obtain credentials for authentication.
 
 Single queries can be passed as an argument on the command line.
 
-However if the argument is - (dash) standard, queries are read from
-standard input.  Lines beginning with #, and lines that are all
-whitespace are ignored; Other lines are assumed to contain a query and
-are passed to the data base engine. Newlines, not semicolins delimit
-queries.
+However if the argument is - (dash) standard, queries are read from standard
+input.  Lines beginning with #, and lines that are all whitespace are
+ignored; Other lines are assumed to contain a query and are passed to the
+data base engine. Newlines, not semicolins delimit queries.
 
 Queries with errors cause the program to terminate with a non zero exit code.
 
-Any output is printed on stdout in pretty-printed columns.  However, the pretty
-printed format not suitable for queries  returing a very large nmber of rows,
-as all results from the query are buffered in memory prior to printing. Queries returning
-a large number of rows should be printed with csv format, which streams to standard out.
+Any output is printed on stdout in pretty-printed columns.  However,
+the pretty printed format not suitable for queries  returing a very large
+nmber of rows, as all results from the query are buffered in memory prior to
+printing. Queries returning a large number of rows should be printed with
+csv format, which streams to standard out.
 
-Optionally, queries can be logged to a file.  The log file is  specified by the
---log option or, if --log is absent, by the environment variable DESPYDB_QUERY_LOG  
+Optionally, queries can be logged to a file.  The log file is  specified by
+the --log option or, if --log is absent, by the environment variable
+DESPYDB_QUERY_LOG
 
 Example:
 
@@ -45,7 +45,8 @@ import os
 
 
 def query_to_cur(dbh, query, args):
-    """return a cursor to a query"""
+    """Return a cursor to a query.
+    """
     if args.debug:
         print(query, file=sys.stderr)
     cur = dbh.cursor()
@@ -61,7 +62,8 @@ def stringify(datum, floatfmt="%8.2f"):
 
 
 def printPrettyFromCursor(cur, args):
-    "print data returned from a query in nice aligned columns"
+    """Print data returned from a query in nice aligned columns.
+    """
     rows = []
     #get column headers -- not very ergonomic
     # exit if function does nto return things
@@ -91,7 +93,8 @@ def isNumber(datum):
 
 
 def printCSVFromCursor(cur, args):
-    """ output the query results as a CSV"""
+    """Output the query results as a CSV.
+    """
     import csv
     import sys
 

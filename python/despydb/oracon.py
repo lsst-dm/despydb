@@ -1,19 +1,17 @@
-"""
-    Define cx_Oracle-specific database access methods
+"""Define cx_Oracle-specific database access methods
 
-    Classes:
-        OracleConnection - Connects to an Oracle instance of a DES database
-                           upon instantiation and the resulting object provides
-                           an interface based on the cx_Oracle Connection class
-                           with extensions to allow callers to interact with
-                           the database in a dialect-neutral manner.
+Classes:
+    OracleConnection - Connects to an Oracle instance of a DES database
+                       upon instantiation and the resulting object provides
+                       an interface based on the cx_Oracle Connection class
+                       with extensions to allow callers to interact with
+                       the database in a dialect-neutral manner.
 
-    Developed at: 
-    The National Center for Supercomputing Applications (NCSA).
-  
-    Copyright (C) 2012 Board of Trustees of the University of Illinois. 
-    All rights reserved.
+Developed at:
+The National Center for Supercomputing Applications (NCSA).
 
+Copyright (C) 2012 Board of Trustees of the University of Illinois.
+All rights reserved.
 """
 
 __version__ = "$Rev$"
@@ -71,21 +69,17 @@ _ORA_NO_SEQUENCE = 2289   # sequence does not exist
 
 
 class OracleConnection (cx_Oracle.Connection):
-    """
-    Provide cx_Oracle-specific implementations of canonical database methods
+    """Provide cx_Oracle-specific implementations of canonical database methods
 
     Refer to desdbi.py for full method documentation.
     """
 
     def __init__(self, access_data):
-        """
-        Initialize an OracleConnection object
+        """Initialize an OracleConnection object.
 
         Connect the OracleConnection instance to the database identified in
         access_data.
-
         """
-
         user = access_data['user']
         pswd = access_data['passwd']
 
@@ -123,22 +117,18 @@ class OracleConnection (cx_Oracle.Connection):
                 raise
 
     def cursor(self, fetchsize=None):
-        """
-        Return a cx_Oracle Cursor object for operating on the connection.
+        """Return a cx_Oracle Cursor object for operating on the connection.
 
         The fetchsize argument is ignored, but retained for compatibility
         with other connection types.
         """
-
         # cx_Oracle doesn't implement/need named cursors, so ignore fetchsize.
 
         return cx_Oracle.Connection.cursor(self)
 
     def get_column_types(self, table_name):
+        """Return a dictionary of python types indexed by column name for a table.
         """
-        Return a dictionary of python types indexed by column name for a table.
-        """
-
         curs = self.cursor()
         curs.execute('SELECT * FROM %s WHERE 0=1' % table_name)
 
@@ -149,27 +139,25 @@ class OracleConnection (cx_Oracle.Connection):
         return types
 
     def get_expr_exec_format(self):
-        "Return a format string for a statement to execute SQL expressions."
-
+        """Return a format string for a statement to execute SQL expressions.
+        """
         return 'SELECT %s FROM DUAL'
 
     def get_named_bind_string(self, name):
-        "Return a named bind (substitution) string for name with cx_Oracle."
-
+        """Return a named bind (substitution) string for name with cx_Oracle.
+        """
         return ":" + name
 
     def get_positional_bind_string(self, pos=1):
-        "Return a positional bind (substitution) string for cx_Oracle."
-
+        """Return a positional bind (substitution) string for cx_Oracle.
+        """
         return ":%d" % pos
 
     def get_regex_format(self, case_sensitive=True):
-        """
-        Return a format string for constructing a regular expression clause.
+        """Return a format string for constructing a regular expression clause.
 
         See DesDbi class for detailed documentation.
         """
-
         if case_sensitive is True:
             param = ", 'c'"
         elif case_sensitive is False:
@@ -182,13 +170,13 @@ class OracleConnection (cx_Oracle.Connection):
         return "REGEXP_LIKE (%%(target)s, %%(pattern)s%s)" % param
 
     def get_seq_next_clause(self, seqname):
-        "Return an SQL expression that extracts the next value from a sequence."
-
+        """Return an SQL expression that extracts the next value from a sequence.
+        """
         return seqname + '.NEXTVAL'
 
     def sequence_drop(self, seq_name):
-        "Drop sequence; do not generate error if it doesn't exist."
-
+        """Drop sequence; do not generate error if it doesn't exist.
+        """
         stmt = 'DROP SEQUENCE %s' % seq_name
 
         curs = self.cursor()
@@ -201,8 +189,8 @@ class OracleConnection (cx_Oracle.Connection):
             curs.close()
 
     def table_drop(self, table):
-        "Drop table; do not generate error if it doesn't exist."
-
+        """Drop table; do not generate error if it doesn't exist.
+        """
         stmt = 'DROP TABLE %s' % table
 
         curs = self.cursor()

@@ -1,11 +1,10 @@
 #!/usr/bin/env python
-"""
-Interact with an Oracle or postgres database from the shell.
+"""Interact with an Oracle or postgres database from the shell.
 
-This program makes a query and presents the result on stdout.  Queries
-can be any SQL statement.  The tool uses the db abstractions present in
-the desdm despydb pckage. These abstrations mitigate some selected
-differences in the SQL dialects spoken by Oracle and Postgres.
+This program makes a query and presents the result on stdout.  Queries can
+be any SQL statement.  The tool uses the db abstractions present in the
+desdm despydb pckage. These abstrations mitigate some selected differences
+in the SQL dialects spoken by Oracle and Postgres.
 
 The package uses the .desdmservices file  to locate the database
 service and to obtain credentials for authentication.
@@ -24,18 +23,20 @@ are sent to ORACLE as one query. This allows for readable multi line queries.
 
 Queries with errors cause the program to terminate with a non zero exit code.
 
-Any output is printed on stdout in pretty-printed columns.  However, the pretty
-printed format not suitable for queries  returning a very large nmber of rows,
-as all results from the query are buffered in memory prior to printing. Queries returning
-a large number of rows should be printed with csv format, which streams to standard out.
+Any output is printed on stdout in pretty-printed columns.  However,
+the pretty printed format not suitable for queries  returning a very large
+nmber of rows, as all results from the query are buffered in memory prior to
+printing. Queries returning a large number of rows should be printed with
+csv format, which streams to standard out.
 
-Logging -- The -d (debug) switch logs two lines for every query to stderr. the first line
-is logged before the submission of the query, It contains the time the query was submitted
-along with  the query itself.  After the query completes, the time to complete the query is
-logged to stderr.
+Logging -- The -d (debug) switch logs two lines for every query to stderr.
+the first line is logged before the submission of the query, It contains the
+time the query was submitted along with  the query itself.  After the query
+completes, the time to complete the query is logged to stderr.
 
-Additionally, queries can be logged to a file.  The log file is  specified by the
---log option or, if --log is absent, by the environment variable DESPYDB_QUERY_LOG
+Additionally, queries can be logged to a file.  The log file is  specified
+by the --log option or, if --log is absent, by the environment variable
+DESPYDB_QUERY_LOG
 
 
 Example:
@@ -57,7 +58,8 @@ import datetime
 
 
 def query_to_cur(dbh, query, args):
-    """return a cursor to a query"""
+    """Return a cursor to a query.
+    """
     if args.debug:
         print(datetime.datetime.strftime(datetime.datetime.now(), "%D %H:%m:%S"), query, file=sys.stderr)
     t0 = time.time()
@@ -75,7 +77,8 @@ def stringify(datum, floatfmt="%8.2f"):
 
 
 def printPrettyFromCursor(cur, args):
-    "print data returned from a query in nice aligned columns"
+    """Print data returned from a query in nice aligned columns.
+    """
     rows = []
     #get column headers -- not very ergonomic
     # exit if function does nto return things
@@ -105,7 +108,8 @@ def isNumber(datum):
 
 
 def printCSVFromCursor(cur, args):
-    """ output the query results as a CSV"""
+    """Output the query results as a CSV.
+    """
     import csv
     import sys
 

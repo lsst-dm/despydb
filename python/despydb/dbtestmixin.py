@@ -1,19 +1,17 @@
-"""
-    Provide a mixin class for DesDbi sub-classes meant for testing.
+"""Provide a mixin class for DesDbi sub-classes meant for testing.
 
-    Classes:
-        DBTestMixin - Adds methods to a DesDbi sub-class that are useful for
-                      database access test suites.
+Classes:
+    DBTestMixin - Adds methods to a DesDbi sub-class that are useful for
+                  database access test suites.
 
-    Since this is a mixin class, it isn't useful to instantiate it alone or
-    create subclasses that do not have other parent classes.
+Since this is a mixin class, it isn't useful to instantiate it alone or
+create subclasses that do not have other parent classes.
 
-    Developed at: 
-    The National Center for Supercomputing Applications (NCSA).
+Developed at:
+The National Center for Supercomputing Applications (NCSA).
 
-    Copyright (C) 2011 Board of Trustees of the University of Illinois. 
-    All rights reserved.
-
+Copyright (C) 2011 Board of Trustees of the University of Illinois.
+All rights reserved.
 """
 
 __version__ = "$Rev$"
@@ -22,8 +20,7 @@ import random
 
 
 class DBTestMixin (object):
-    """
-    A mixin class to add testing functionality to a DesDbi sub-class.
+    """A mixin class to add testing functionality to a DesDbi sub-class.
 
     This class defines a number of methods that typically cannot stand on their
     own.  Instead they add functionality to a subclass of coreutils.DesDbi.
@@ -38,8 +35,8 @@ class DBTestMixin (object):
         pass
 
     def sequence_create(self, seq_name):
-        "Create the specified sequence with default initial configuration."
-
+        """Create the specified sequence with default initial configuration.
+        """
         curs = self.cursor()
         try:
             curs.execute('CREATE SEQUENCE %s' % seq_name)
@@ -47,18 +44,17 @@ class DBTestMixin (object):
             curs.close()
 
     def sequence_recreate(self, seq_name):
-        """
-        Drop and create the specified sequence with default configuration.
+        """Drop and create the specified sequence with default configuration.
 
         This method returns a context manager, so it may be used in a with
         statement.
         """
-
         self.sequence_drop(seq_name)
         self.sequence_create(seq_name)
 
         class Ctxtmgr:
-            "A simple context manager the drops a sequence when complete."
+            """A simple context manager the drops a sequence when complete.
+            """
 
             def __init__(self, con, seq):
                 self.con = con
@@ -73,8 +69,7 @@ class DBTestMixin (object):
         return Ctxtmgr(self, seq_name)
 
     def table_copy_empty(self, copy_table, src_table):
-        """
-        Create an empty copy of the source table.
+        """Create an empty copy of the source table.
 
         The copy must not already exist.
 
@@ -83,7 +78,6 @@ class DBTestMixin (object):
         This means that some operations could succeed on the copy, but fail on
         the source table.
         """
-
         stmt = 'CREATE TABLE %s AS SELECT * FROM %s WHERE 0 = 1' % (
             copy_table, src_table)
         cursor = self.cursor()
@@ -91,8 +85,7 @@ class DBTestMixin (object):
         cursor.close()
 
     def table_can_query(self, table):
-        """
-        Return Boolean indicating whether table can be queried.
+        """Return Boolean indicating whether table can be queried.
 
         Attempt to retrieve zero rows from the indicated object and return the
         results.  If an exception is raised, leave the connection in a usable
@@ -104,7 +97,6 @@ class DBTestMixin (object):
         or that the object exists in any particular schema.  The provided table
         name can include a schema prefix to test for the latter case.
         """
-
         curs = self.cursor()
 
         svp = '"svp_table_query_%s"' % random.randint(0, 9999999)
@@ -121,8 +113,7 @@ class DBTestMixin (object):
         return ret
 
     def table_create(self, table, columns, types=None):
-        """
-        Create a simple table.
+        """Create a simple table.
 
         Create the specified table.  The columns and types argument specify the 
         table definition in ways that depend on their type, providing a number
@@ -140,7 +131,6 @@ class DBTestMixin (object):
         sequence sequence each entry in columns names a column and the
                           corresponding entry in types provides its type.
         """
-
         if types is None:
             if hasattr(columns, '__iter__'):
                 spec = ','.join(columns)
@@ -160,8 +150,7 @@ class DBTestMixin (object):
             cursor.close()
 
     def table_prep_test_copy(self, test_table, src_table, cols, rows):
-        """
-        Prepare a copy of an existing table for testing purposes.
+        """Prepare a copy of an existing table for testing purposes.
 
         Drop test_table if it exists.  Create a copy of src_table.  Insert rows
         into cols of test_table.  The cols and rows arguments correspond to
@@ -172,26 +161,24 @@ class DBTestMixin (object):
         it doesn't exist in the current user's schema and is configured to
         create new tables in the current user's schema.
         """
-
         self.table_drop(test_table)
         self.table_copy_empty(test_table, src_table)
         self.insert_many(test_table, cols, rows)
 
     def table_recreate(self, table, columns, types=None):
-        """
-        Drop (if necessary) and create the indicated table.
+        """Drop (if necessary) and create the indicated table.
 
         The columns and types arguments are the same as for table_create().
 
         This method also returns a context manager, so it may be used in a with
         statement.
         """
-
         self.table_drop(table)
         self.table_create(table, columns, types)
 
         class Ctxtmgr:
-            "A simple context manager the drops a table when complete."
+            """A simple context manager the drops a table when complete.
+            """
 
             def __init__(self, con, tab):
                 self.con = con
