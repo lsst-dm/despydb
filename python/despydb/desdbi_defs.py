@@ -1,9 +1,4 @@
 #!/usr/bin/env python
-# $Id$
-# $Rev::                                  $:  # Revision of last commit.
-# $LastChangedBy::                        $:  # Author of last commit.
-# $LastChangedDate::                      $:  # Date of last commit.
-
 # cx_Oracle indexes for cursor.description sequences
 COL_NAME = 0
 COL_TYPE = 1
