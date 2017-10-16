@@ -24,7 +24,7 @@
 
 __version__ = "2.0.0"
 
-import re 
+import re
 import sys
 import copy
 from despyserviceaccess import serviceaccess
@@ -35,6 +35,7 @@ from collections import OrderedDict
 
 import errors
 import desdbi_defs as defs
+
 
 class DesDbi (object):
     """
@@ -76,10 +77,10 @@ class DesDbi (object):
 
         """
 
-        self.configdict = serviceaccess.parse(desfile,section,'DB',retry)
-        self.type       = self.configdict['type']
+        self.configdict = serviceaccess.parse(desfile, section, 'DB', retry)
+        self.type = self.configdict['type']
 
-        serviceaccess.check (self.configdict, 'DB')
+        serviceaccess.check(self.configdict, 'DB')
 
         if self.type == 'oracle':
             import oracon
@@ -88,7 +89,7 @@ class DesDbi (object):
             import pgcon
             conClass = pgcon.PostgresConnection
         else:
-            raise errors.UnknownDBTypeError (self.type)
+            raise errors.UnknownDBTypeError(self.type)
 
         MAXTRIES = 1
         if retry:
@@ -97,10 +98,10 @@ class DesDbi (object):
         trycnt = 0
         done = False
         lasterr = ""
-        while not done and trycnt < MAXTRIES: 
+        while not done and trycnt < MAXTRIES:
             trycnt += 1
             try:
-                self.con = conClass (self.configdict)
+                self.con = conClass(self.configdict)
                 done = True
             except Exception as e:
                 lasterr = str(e).strip()
@@ -121,14 +122,13 @@ class DesDbi (object):
             raise Exception("Aborting attempt to connect to database.  Last error message: %s" % lasterr)
         elif trycnt > 1: # only print success message if we've printed failure message
             print "Successfully connected to database after retrying."
-                
 
     def __enter__(self):
         "Enable the use of this class as a context manager."
 
         return self
 
-    def __exit__ (self, exc_type, exc_value, traceback):
+    def __exit__(self, exc_type, exc_value, traceback):
         """
         Shutdown the connection to the database when context ends.
 
@@ -138,15 +138,15 @@ class DesDbi (object):
         """
 
         if exc_type is None:
-            self.commit ()
+            self.commit()
         else:
-            self.rollback ()
+            self.rollback()
 
-        self.close ()
+        self.close()
 
         return False
 
-    def autocommit (self, state = None):
+    def autocommit(self, state=None):
         """
         Return and optionally set autocommit mode.
 
@@ -157,7 +157,7 @@ class DesDbi (object):
         """
         a = self.con.autocommit
 
-        if isinstance (state, bool):
+        if isinstance(state, bool):
             self.con.autocommit = state
 
         return a
@@ -174,7 +174,7 @@ class DesDbi (object):
         """
         return self.con.commit()
 
-    def cursor(self, fetchsize = None):
+    def cursor(self, fetchsize=None):
         """
         Return a Cursor object for operating on the connection.
 
@@ -185,7 +185,6 @@ class DesDbi (object):
         default behavior is to fetch all rows from the database at once.
         """
         return self.con.cursor(fetchsize)
-
 
     def get_column_metadata(self, table_name):
         """
@@ -201,8 +200,8 @@ class DesDbi (object):
         elif self.type == 'postgres':
             cursor.execute(sqlstr)
         else:
-            raise errors.UnknownDBTypeError (self.type)
-        retval = {} 
+            raise errors.UnknownDBTypeError(self.type)
+        retval = {}
         for col in cursor.description:
             retval[col[defs.COL_NAME].lower()] = col
         cursor.close()
@@ -218,7 +217,6 @@ class DesDbi (object):
             res[col[defs.COL_NAME].lower()] = col[defs.COL_LENGTH]
         return res
 
-
     def get_column_names(self, table_name):
         """
         Return a sequence containing the column names of specified table.
@@ -229,14 +227,13 @@ class DesDbi (object):
         column_names = [d[0].lower() for d in meta.values()]
         return column_names
 
-    def get_column_types (self, table_name):
+    def get_column_types(self, table_name):
         """
         Return a dictionary of python types indexed by column name for a table.
         """
-        return self.con.get_column_types (table_name)
+        return self.con.get_column_types(table_name)
 
-
-    def get_named_bind_string (self, name):
+    def get_named_bind_string(self, name):
         """
         Return a named bind (substitution) string.
 
@@ -248,9 +245,9 @@ class DesDbi (object):
             oracle result:   :abc
             postgres result: %(abc)s
         """
-        return self.con.get_named_bind_string (name)
+        return self.con.get_named_bind_string(name)
 
-    def get_positional_bind_string (self, pos=1):
+    def get_positional_bind_string(self, pos=1):
         """
         Return a positional bind (substitution) string.
 
@@ -264,7 +261,7 @@ class DesDbi (object):
         """
         return self.con.get_positional_bind_string(pos)
 
-    def get_regex_clause (self, target, pattern, case_sensitive = True):
+    def get_regex_clause(self, target, pattern, case_sensitive=True):
         """
         Return a dialect-specific regular expression matching clause.
 
@@ -289,12 +286,12 @@ class DesDbi (object):
             oracle result:   REGEXP_LIKE (:1, 'prefix.*')
             postgres result: (%s ~ 'prefix.*')
         """
-        d = {'target' : target,
+        d = {'target': target,
              'pattern': "'" + pattern + "'"}
 
-        return self.get_regex_format (case_sensitive) % d
+        return self.get_regex_format(case_sensitive) % d
 
-    def get_regex_format (self, case_sensitive = True):
+    def get_regex_format(self, case_sensitive=True):
         """
         Return a format string for constructing a regular expression clause.
 
@@ -326,9 +323,9 @@ class DesDbi (object):
             oracle result:   REGEXP_LIKE (:1, :1, 'c')
             postgres result: (%s ~ %s)
         """
-        return self.con.get_regex_format (case_sensitive)
+        return self.con.get_regex_format(case_sensitive)
 
-    def get_seq_next_clause (self, seqname):
+    def get_seq_next_clause(self, seqname):
         """
         Return an SQL expression that extracts the next value from a sequence.
 
@@ -340,9 +337,9 @@ class DesDbi (object):
             oracle result:   seq1.NEXTVAL
             postgres result: nextval('seq1')
         """
-        return self.con.get_seq_next_clause (seqname)
+        return self.con.get_seq_next_clause(seqname)
 
-    def get_seq_next_value (self, seqname):
+    def get_seq_next_value(self, seqname):
         """
         Return the next value from the specified sequence.
 
@@ -354,10 +351,10 @@ class DesDbi (object):
             oracle result from:   SELECT seq1.NEXTVAL FROM DUAL
             postgres result from: SELECT nextval('seq1')
         """
-        expr = self.get_seq_next_clause (seqname)
-        return self.exec_sql_expression (expr) [0]
+        expr = self.get_seq_next_clause(seqname)
+        return self.exec_sql_expression(expr)[0]
 
-    def insert_many (self, table, columns, rows):
+    def insert_many(self, table, columns, rows):
         """
         Insert a sequence of rows into the indicated database table.
 
@@ -373,25 +370,25 @@ class DesDbi (object):
         of keys for each row must match the set of column names.
         """
 
-        if len (rows) == 0:
+        if len(rows) == 0:
             return
-        if hasattr (rows [0], 'keys'):
-            vals = ','.join ([self.get_named_bind_string (c) for c in columns])
+        if hasattr(rows[0], 'keys'):
+            vals = ','.join([self.get_named_bind_string(c) for c in columns])
         else:
             bindStr = self.get_positional_bind_string()
-            vals = ','.join ([bindStr for c in columns])
+            vals = ','.join([bindStr for c in columns])
 
-        colStr = ','.join (columns)
+        colStr = ','.join(columns)
 
         stmt = 'INSERT INTO %s (%s) VALUES (%s)' % (table, colStr, vals)
 
-        curs = self.cursor ()
+        curs = self.cursor()
         try:
-            curs.executemany (stmt, rows)
+            curs.executemany(stmt, rows)
         finally:
-            curs.close ()
+            curs.close()
 
-    def insert_many_indiv (self, table, columns, rows):
+    def insert_many_indiv(self, table, columns, rows):
         """
         Insert a sequence of rows into the indicated database table.
 
@@ -407,19 +404,19 @@ class DesDbi (object):
         of keys for each row must match the set of column names.
         """
 
-        if len (rows) == 0:
+        if len(rows) == 0:
             return
-        if hasattr (rows [0], 'keys'):
-            vals = ','.join ([self.get_named_bind_string (c) for c in columns])
+        if hasattr(rows[0], 'keys'):
+            vals = ','.join([self.get_named_bind_string(c) for c in columns])
         else:
             bindStr = self.get_positional_bind_string()
-            vals = ','.join ([bindStr for c in columns])
+            vals = ','.join([bindStr for c in columns])
 
-        colStr = ','.join (columns)
+        colStr = ','.join(columns)
 
         stmt = 'INSERT INTO %s (%s) VALUES (%s)' % (table, colStr, vals)
 
-        curs = self.cursor ()
+        curs = self.cursor()
         curs.prepare(stmt)
         for row in rows:
             try:
@@ -430,11 +427,11 @@ class DesDbi (object):
                 print "params:", row
                 print "\n\n"
                 raise
-        
-        curs.close ()
 
-    def query_simple (self, from_, cols = '*', where = None, orderby = None,
-                      params = None, rowtype = dict):
+        curs.close()
+
+    def query_simple(self, from_, cols='*', where=None, orderby=None,
+                     params=None, rowtype=dict):
         """
         Issue a simple query and return results.
 
@@ -475,30 +472,30 @@ class DesDbi (object):
                 rows = dbh.query_simple ('tab1', cols, where, ord, parms)
             Possible Output:
                [{"col1": 23, "col2": "ABC"}, {"col1": 45, "col2": "AAA"}]
-                
+
         """
 
         if not from_:
-            raise TypeError ('A table name or other from expression is '
-                             'required.')
+            raise TypeError('A table name or other from expression is '
+                            'required.')
 
-        if hasattr (cols, '__iter__') and len (cols) > 0:
-            colstr = ','.join (cols)
+        if hasattr(cols, '__iter__') and len(cols) > 0:
+            colstr = ','.join(cols)
         elif cols:
             colstr = cols
         else:
-            raise TypeError ('A non-empty sequence of column names or '
-                             'expressions or a string of such is required.')
+            raise TypeError('A non-empty sequence of column names or '
+                            'expressions or a string of such is required.')
 
-        if hasattr (where, '__iter__') and len (where) > 0:
-            where_str = ' WHERE ' + ' AND '.join (where)
+        if hasattr(where, '__iter__') and len(where) > 0:
+            where_str = ' WHERE ' + ' AND '.join(where)
         elif where:
             where_str = ' WHERE ' + where
         else:
             where_str = ''
 
-        if hasattr (orderby, '__iter__') and len (orderby) > 0:
-            ord_str = ' ORDER BY ' + ','.join (orderby)
+        if hasattr(orderby, '__iter__') and len(orderby) > 0:
+            ord_str = ' ORDER BY ' + ','.join(orderby)
         elif orderby:
             ord_str = ' ORDER BY ' + orderby
         else:
@@ -506,25 +503,25 @@ class DesDbi (object):
 
         stmt = "SELECT %s FROM %s%s%s" % (colstr, from_, where_str, ord_str)
 
-        curs = self.cursor ()
+        curs = self.cursor()
         try:
             if params:
-                curs.execute (stmt, params)
+                curs.execute(stmt, params)
             else:
-                curs.execute (stmt)
+                curs.execute(stmt)
 
-            rows = curs.fetchall ()
-            rcols = [desc [0].lower () for desc in curs.description]
+            rows = curs.fetchall()
+            rcols = [desc[0].lower() for desc in curs.description]
 
         finally:
-            curs.close ()
+            curs.close()
 
         if rowtype == dict:
-            res = [{col:val for col, val in zip (rcols, row)} for row in rows]
-        elif len (rows) > 0 and type (rows [0]) == rowtype:
+            res = [{col: val for col, val in zip(rcols, row)} for row in rows]
+        elif len(rows) > 0 and type(rows[0]) == rowtype:
             res = rows
         else:
-            res = [rowtype (row) for row in rows]
+            res = [rowtype(row) for row in rows]
 
         return res
 
@@ -541,7 +538,7 @@ class DesDbi (object):
 
         return self.con.rollback()
 
-    def sequence_drop (self, seq_name):
+    def sequence_drop(self, seq_name):
         "Drop sequence; do not generate error if it doesn't exist."
 
         self.con.sequence_drop(seq_name)
@@ -551,12 +548,12 @@ class DesDbi (object):
         del copydict['passwd']
         return '%s' % (copydict)
 
-    def table_drop (self, table):
+    def table_drop(self, table):
         "Drop table; do not generate error if it doesn't exist."
 
         self.con.table_drop(table)
 
-    def from_dual (self):
+    def from_dual(self):
         return self.con.from_dual()
 
     def which_services_file(self):
@@ -566,7 +563,7 @@ class DesDbi (object):
         return self.configdict['meta_section']
 
     def quote(self, value):
-        return "'%s'" % str(value).replace("'","''")
+        return "'%s'" % str(value).replace("'", "''")
 
     def get_current_timestamp_str(self):
         """
@@ -587,9 +584,7 @@ class DesDbi (object):
         curs.close()
         return result
 
-
-
-    def basic_insert_row (self, table, row):
+    def basic_insert_row(self, table, row):
         """ Insert a row into the table """
 
         ctstr = self.get_current_timestamp_str()
@@ -608,7 +603,6 @@ class DesDbi (object):
                                                    ','.join(cols),
                                                    ','.join(namedbind))
 
-
         curs = self.cursor()
         try:
             curs.execute(sql, params)
@@ -620,16 +614,14 @@ class DesDbi (object):
             print "params> %s\n" % (params)
             raise
 
-
-
-    def basic_update_row (self, table, updatevals, wherevals):
+    def basic_update_row(self, table, updatevals, wherevals):
         """ Update a row in a table """
 
         ctstr = self.get_current_timestamp_str()
 
         params = {}
         whclause = []
-        for c,v in wherevals.items():
+        for c, v in wherevals.items():
             if v == ctstr:
                 whclause.append("%s=%s" % (c, v))
             else:
@@ -637,15 +629,14 @@ class DesDbi (object):
                 params['w_'+c] = v
 
         upclause = []
-        for c,v in updatevals.items():
+        for c, v in updatevals.items():
             if v == ctstr:
                 upclause.append("%s=%s" % (c, v))
             else:
                 upclause.append("%s=%s" % (c, self.get_named_bind_string('u_'+c)))
                 params['u_'+c] = v
 
-
-        sql = "update %s set %s where %s" % (table, ','.join(upclause), 
+        sql = "update %s set %s where %s" % (table, ','.join(upclause),
                                              ' and '.join(whclause))
 
         curs = self.cursor()
@@ -666,10 +657,10 @@ class DesDbi (object):
             raise Exception("Error: 0 rows updated in table %s" % table)
 
         curs.close()
-   
+
 
 #### Embedded simple test
-if __name__ ==  '__main__' :
+if __name__ == '__main__':
     dbh = DesDbi()
     print 'dbh = ', dbh
     if dbh.is_postgres():
@@ -682,7 +673,7 @@ if __name__ ==  '__main__' :
     print dbh.get_column_names('exposure')
 
     cursor = dbh.cursor()
-    cursor.execute ('SELECT count(*) from exposure')
+    cursor.execute('SELECT count(*) from exposure')
     row = cursor.fetchone()
     print 'Number exposures:', row[0]
     cursor.close()

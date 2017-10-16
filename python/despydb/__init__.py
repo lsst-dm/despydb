@@ -36,6 +36,6 @@ __all__ = ['DesDbi', 'DBTestMixin', 'MissingDBId', 'ServiceaccessException',
 # Make the main class and all the error classes available directly within
 # the package to simplify imports for package users.
 
-from .desdbi      import DesDbi
+from .desdbi import DesDbi
 from .dbtestmixin import DBTestMixin
-from .errors      import *
+from .errors import *

@@ -23,31 +23,34 @@
 
 """
 
+
 class MissingDBId (Exception):
     "Service access configuration has missing database identification."
 
-    def __init__ (self, msg = None):
+    def __init__(self, msg=None):
         if not msg:
             msg = 'No database identifier found in service access config.'
 
-        Exception.__init__ (self, msg)
+        Exception.__init__(self, msg)
+
 
 class UnknownDBTypeError (NotImplementedError):
     "Service access configuration identifies an unknown database type."
 
-    def __init__ (self, db_type, msg = None):
+    def __init__(self, db_type, msg=None):
         self.db_type = db_type
         if not msg:
             msg = 'database type: "%s"' % self.db_type
 
-        NotImplementedError.__init__ (self, msg)
+        NotImplementedError.__init__(self, msg)
+
 
 class UnknownCaseSensitiveError (NotImplementedError):
     "Invalid case sensitivity flag."
 
-    def __init__ (self, value, msg = None):
+    def __init__(self, value, msg=None):
         self.value = value
         if not msg:
             msg = 'Unknown case sensitivity value: "%s"' % value
 
-        NotImplementedError.__init__ (self, msg)
+        NotImplementedError.__init__(self, msg)
