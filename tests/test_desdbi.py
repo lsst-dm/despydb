@@ -35,7 +35,7 @@
 
 __version__ = "$Rev: 10292 $"
 
-import ConfigParser
+import configparser
 import datetime
 import sys
 import unittest
@@ -158,7 +158,7 @@ class TestDesDbi (unittest.TestCase):
 
         try:
             cls.dbh = DesDbiTest(section=cls.testSection)
-        except ConfigParser.NoSectionError as exc:
+        except configparser.NoSectionError as exc:
             msg = ('Error: Cannot find the "%s" section in the DES services '
                    'file.\nTo reduce the chances of damange to production '
                    'systems when this script drops\nand creates tables and '
@@ -224,7 +224,7 @@ class TestDesDbi (unittest.TestCase):
             'col4': 'char (1)'
         }
 
-        columnDefs = ','.join([c + ' ' + v for c, v in columnDBTypes.items()])
+        columnDefs = ','.join([c + ' ' + v for c, v in list(columnDBTypes.items())])
         with self.dbh.table_recreate(table, columnDefs):
             try:
                 res = self.dbh.get_column_types(table)

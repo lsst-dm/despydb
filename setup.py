@@ -24,7 +24,7 @@ def testing():
                        "query.py \"select * from LOCATION where ROWNUM < 10\"     >/dev/null"]
 
     for cmd in test_dbi_cmds + test_query_cmds:
-        print cmd
+        print(cmd)
         os.system(cmd)
     os.chdir(here)
     return

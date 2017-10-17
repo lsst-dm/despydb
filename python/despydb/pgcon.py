@@ -26,7 +26,7 @@ import psycopg2
 import psycopg2.errorcodes
 from psycopg2.extensions import connection as pgConnection
 
-import errors
+from . import errors
 
 # The first time get_column_types() is used, it will populate this mapping
 # from psycopg2 type_code values to python types.
@@ -61,7 +61,7 @@ def _make_type_map():
         elif code == psycopg2.extensions.TIME:
             ptype = datetime.time
         elif code == psycopg2.extensions.UNICODE:
-            ptype = unicode
+            ptype = str
         else: # Ignore other types for now.
             ptype = None
         if ptype:

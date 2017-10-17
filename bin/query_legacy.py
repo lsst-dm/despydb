@@ -47,7 +47,7 @@ import os
 def query_to_cur(dbh, query, args):
     """return a cursor to a query"""
     if args.debug:
-        print >> sys.stderr, query
+        print(query, file=sys.stderr)
     cur = dbh.cursor()
     cur.execute(query)
     return cur
@@ -71,7 +71,7 @@ def printPrettyFromCursor(cur, args):
         rows.append([item[0] for item in cur.description])
 
     rows = rows + cur.fetchall()
-    zipped = zip(*rows)
+    zipped = list(zip(*rows))
     widths = []
     for col in zipped:
         width = max([len(stringify(c)) for c in col])
@@ -79,7 +79,7 @@ def printPrettyFromCursor(cur, args):
     fmat = ' '.join(['{:<%d}' % width for width in widths])
     for row in rows:
         row = [stringify(r) for r in row]
-        print fmat.format(*row)
+        print(fmat.format(*row))
 
 
 def isNumber(datum):

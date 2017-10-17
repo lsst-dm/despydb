@@ -33,7 +33,7 @@
 """
 
 
-import ConfigParser
+import configparser
 import sys
 import unittest
 import despydb
@@ -62,7 +62,7 @@ class TestDBTestMixin (unittest.TestCase):
 
         try:
             cls.dbh = DBTestMixinTest(section=cls.testSection)
-        except ConfigParser.NoSectionError as exc:
+        except configparser.NoSectionError as exc:
             msg = ('Error: Cannot find the "%s" section in the DES services '
                    'file.\nTo reduce the chances of damange to production '
                    'systems when this script drops\nand creates tables and '

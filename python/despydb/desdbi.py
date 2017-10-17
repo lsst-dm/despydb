@@ -28,8 +28,8 @@ import socket
 from collections import OrderedDict
 # importing of DB specific modules done down inside code
 
-import errors
-import desdbi_defs as defs
+from . import errors
+from . import desdbi_defs as defs
 
 
 class DesDbi (object):
@@ -78,10 +78,10 @@ class DesDbi (object):
         serviceaccess.check(self.configdict, 'DB')
 
         if self.type == 'oracle':
-            import oracon
+            from . import oracon
             conClass = oracon.OracleConnection
         elif self.type == 'postgres':
-            import pgcon
+            from . import pgcon
             conClass = pgcon.PostgresConnection
         else:
             raise errors.UnknownDBTypeError(self.type)
@@ -101,22 +101,22 @@ class DesDbi (object):
             except Exception as e:
                 lasterr = str(e).strip()
                 timestamp = time.strftime("%x %X", time.localtime())
-                print "%s: Could not connect to database, try %i/%i" % (timestamp, trycnt, MAXTRIES)
+                print("%s: Could not connect to database, try %i/%i" % (timestamp, trycnt, MAXTRIES))
                 if trycnt < MAXTRIES:
-                    print "\tRetrying...\n"
+                    print("\tRetrying...\n")
                     time.sleep(TRY_DELAY)
                 else:
-                    print "  Error, could not connect to the database after %i retries: %s" % (MAXTRIES, lasterr)
+                    print("  Error, could not connect to the database after %i retries: %s" % (MAXTRIES, lasterr))
 
         if not done:
-            print "Exechost:", socket.gethostname()
-            print "Connection information:", str(self)
+            print("Exechost:", socket.gethostname())
+            print("Connection information:", str(self))
             #for key in ("user", "type", "port", "server"):
             #    print "\t%s = %s" % (key, self.configdict[key])
-            print ""
+            print("")
             raise Exception("Aborting attempt to connect to database.  Last error message: %s" % lasterr)
         elif trycnt > 1: # only print success message if we've printed failure message
-            print "Successfully connected to database after retrying."
+            print("Successfully connected to database after retrying.")
 
     def __enter__(self):
         "Enable the use of this class as a context manager."
@@ -208,7 +208,7 @@ class DesDbi (object):
         """
         meta = self.get_column_metadata(table_name)
         res = {}
-        for col in meta.values():
+        for col in list(meta.values()):
             res[col[defs.COL_NAME].lower()] = col[defs.COL_LENGTH]
         return res
 
@@ -219,7 +219,7 @@ class DesDbi (object):
         Column names are converted to lowercase.
         """
         meta = self.get_column_metadata(table_name)
-        column_names = [d[0].lower() for d in meta.values()]
+        column_names = [d[0].lower() for d in list(meta.values())]
         return column_names
 
     def get_column_types(self, table_name):
@@ -417,10 +417,10 @@ class DesDbi (object):
             try:
                 curs.execute(None, row)
             except Exception as err:
-                print "\n\nError: ", err
-                print "sql>", stmt
-                print "params:", row
-                print "\n\n"
+                print("\n\nError: ", err)
+                print("sql>", stmt)
+                print("params:", row)
+                print("\n\n")
                 raise
 
         curs.close()
@@ -573,7 +573,7 @@ class DesDbi (object):
 
         result = OrderedDict()
         for line in curs:
-            d = dict(zip(desc, line))
+            d = dict(list(zip(desc, line)))
             result[d[tkey.lower()].lower()] = d
 
         curs.close()
@@ -584,7 +584,7 @@ class DesDbi (object):
 
         ctstr = self.get_current_timestamp_str()
 
-        cols = row.keys()
+        cols = list(row.keys())
         namedbind = []
         params = {}
         for col in cols:
@@ -603,10 +603,10 @@ class DesDbi (object):
             curs.execute(sql, params)
         except:
             (type, value, traceback) = sys.exc_info()
-            print "******************************"
-            print "Error:", type, value
-            print "sql> %s\n" % (sql)
-            print "params> %s\n" % (params)
+            print("******************************")
+            print("Error:", type, value)
+            print("sql> %s\n" % (sql))
+            print("params> %s\n" % (params))
             raise
 
     def basic_update_row(self, table, updatevals, wherevals):
@@ -616,7 +616,7 @@ class DesDbi (object):
 
         params = {}
         whclause = []
-        for c, v in wherevals.items():
+        for c, v in list(wherevals.items()):
             if v == ctstr:
                 whclause.append("%s=%s" % (c, v))
             else:
@@ -624,7 +624,7 @@ class DesDbi (object):
                 params['w_'+c] = v
 
         upclause = []
-        for c, v in updatevals.items():
+        for c, v in list(updatevals.items()):
             if v == ctstr:
                 upclause.append("%s=%s" % (c, v))
             else:
@@ -639,16 +639,16 @@ class DesDbi (object):
             curs.execute(sql, params)
         except:
             (type, value, traceback) = sys.exc_info()
-            print "******************************"
-            print "Error:", type, value
-            print "sql> %s\n" % (sql)
-            print "params> %s\n" % params
+            print("******************************")
+            print("Error:", type, value)
+            print("sql> %s\n" % (sql))
+            print("params> %s\n" % params)
             raise
 
         if curs.rowcount == 0:
-            print "******************************"
-            print "sql> %s\n" % sql
-            print "params> %s\n" % params
+            print("******************************")
+            print("sql> %s\n" % sql)
+            print("params> %s\n" % params)
             raise Exception("Error: 0 rows updated in table %s" % table)
 
         curs.close()
@@ -657,20 +657,20 @@ class DesDbi (object):
 #### Embedded simple test
 if __name__ == '__main__':
     dbh = DesDbi()
-    print 'dbh = ', dbh
+    print('dbh = ', dbh)
     if dbh.is_postgres():
-        print 'Connected to postgres DB'
+        print('Connected to postgres DB')
     elif dbh.is_oracle():
-        print 'Connected to oracle DB'
-    print 'which_services_file = ', dbh.which_services_file()
-    print 'which_services_section = ', dbh.which_services_section()
+        print('Connected to oracle DB')
+    print('which_services_file = ', dbh.which_services_file())
+    print('which_services_section = ', dbh.which_services_section())
 
-    print dbh.get_column_names('exposure')
+    print(dbh.get_column_names('exposure'))
 
     cursor = dbh.cursor()
     cursor.execute('SELECT count(*) from exposure')
     row = cursor.fetchone()
-    print 'Number exposures:', row[0]
+    print('Number exposures:', row[0])
     cursor.close()
     #dbh.commit()
     dbh.close()

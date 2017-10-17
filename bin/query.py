@@ -59,11 +59,11 @@ import datetime
 def query_to_cur(dbh, query, args):
     """return a cursor to a query"""
     if args.debug:
-        print >> sys.stderr, datetime.datetime.strftime(datetime.datetime.now(), "%D %H:%m:%S"), query
+        print(datetime.datetime.strftime(datetime.datetime.now(), "%D %H:%m:%S"), query, file=sys.stderr)
     t0 = time.time()
     cur = dbh.cursor()
     cur.execute(query)
-    print "query took", time.time()-t0, "seconds"
+    print("query took", time.time()-t0, "seconds")
     return cur
 
 
@@ -85,7 +85,7 @@ def printPrettyFromCursor(cur, args):
         rows.append([item[0] for item in cur.description])
 
     rows = rows + cur.fetchall()
-    zipped = zip(*rows)
+    zipped = list(zip(*rows))
     widths = []
     for col in zipped:
         width = max([len(stringify(c)) for c in col])
@@ -93,7 +93,7 @@ def printPrettyFromCursor(cur, args):
     fmat = ' '.join(['{:<%d}' % width for width in widths])
     for row in rows:
         row = [stringify(r) for r in row]
-        print fmat.format(*row)
+        print(fmat.format(*row))
 
 
 def isNumber(datum):

@@ -24,7 +24,7 @@ import warnings
 
 import cx_Oracle
 
-import errors
+from . import errors
 
 # Construct a name for the v$session module column to allow database auditing.
 
@@ -44,23 +44,23 @@ _MODULE_NAME = _MODULE_NAME[:48]
 _TYPE_MAP = {cx_Oracle.BINARY: bytearray,
              cx_Oracle.BFILE: cx_Oracle.BFILE,
              cx_Oracle.BLOB: bytearray,
-             cx_Oracle.CLOB: unicode,
+             cx_Oracle.CLOB: str,
              cx_Oracle.CURSOR: cx_Oracle.CURSOR,
              cx_Oracle.DATETIME: datetime.datetime,
              cx_Oracle.FIXED_CHAR: str,
-             cx_Oracle.FIXED_UNICODE: unicode,
+             cx_Oracle.FIXED_UNICODE: str,
              cx_Oracle.INTERVAL: datetime.timedelta,
              cx_Oracle.LOB: bytearray,
              cx_Oracle.LONG_BINARY: bytearray,
              cx_Oracle.LONG_STRING: str,
              cx_Oracle.NATIVE_FLOAT: float,
-             cx_Oracle.NCLOB: unicode,
+             cx_Oracle.NCLOB: str,
              cx_Oracle.NUMBER: float,
              cx_Oracle.OBJECT: cx_Oracle.OBJECT,
              cx_Oracle.ROWID: bytearray,
              cx_Oracle.STRING: str,
              cx_Oracle.TIMESTAMP: datetime.datetime,
-             cx_Oracle.UNICODE: unicode
+             cx_Oracle.UNICODE: str
              }
 
 # Define some symbolic names for oracle error codes to make it clearer what
