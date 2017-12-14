@@ -15,8 +15,6 @@ Copyright (C) 2011 Board of Trustees of the University of Illinois.
 All rights reserved.
 """
 
-__version__ = "2.0.0"
-
 import re
 import sys
 import copy

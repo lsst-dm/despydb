@@ -18,8 +18,6 @@ Copyright (C) 2012 Board of Trustees of the University of Illinois.
 All rights reserved.
 """
 
-__version__ = "2.0.1"
-
 # Note that pydoc includes documentation for entries in the __all__  list when
 # generating documentation for this package.
 

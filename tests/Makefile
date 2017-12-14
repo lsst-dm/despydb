@@ -1,8 +1,3 @@
-# $Id: Makefile 12357 2013-06-27 02:03:47Z donaldp $
-# $Rev:: 12357                            $:  # Revision of last commit.
-# $LastChangedBy:: donaldp                $:  # Author of last commit.
-# $LastChangedDate:: 2013-06-26 21:03:47 #$:  # Date of last commit.
-
 # Override any environment variable called "prefix".  This would normally be
 # set to /usr/local, but that's not reasonable for this package.
 prefix=

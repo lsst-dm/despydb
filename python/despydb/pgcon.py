@@ -15,8 +15,6 @@ Copyright (C) 2012 Board of Trustees of the University of Illinois.
 All rights reserved.
 """
 
-__version__ = "$Rev$"
-
 import datetime
 import random
 

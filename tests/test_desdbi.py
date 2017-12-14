@@ -32,8 +32,6 @@ All rights reserved.
 
 """
 
-__version__ = "$Rev: 10292 $"
-
 import configparser
 import datetime
 import sys
