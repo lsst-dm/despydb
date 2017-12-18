@@ -1,8 +1,3 @@
-# $Id$
-# $Rev::                                  $:  # Revision of last commit.
-# $LastChangedBy::                        $:  # Author of last commit.
-# $LastChangedDate::                      $:  # Date of last commit.
-
 """
     Provide DES database access methods
 
@@ -24,8 +19,6 @@
     All rights reserved.
 
 """
-
-__version__ = "2.0.1"
 
 # Note that pydoc includes documentation for entries in the __all__  list when
 # generating documentation for this package.

@@ -1,10 +1,5 @@
 #!/usr/bin/env python
 
-# $Id$
-# $Rev::                                  $:  # Revision of last commit.
-# $LastChangedBy::                        $:  # Author of last commit.
-# $LastChangedDate::                      $:  # Date of last commit.
-
 """
     Provide a dialect-neutral interface to DES databases.
 
@@ -22,9 +17,7 @@
 
 """
 
-__version__ = "2.0.0"
-
-import re 
+import re
 import sys
 import copy
 from despyserviceaccess import serviceaccess

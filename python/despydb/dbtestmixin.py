@@ -1,8 +1,3 @@
-# $Id$
-# $Rev::                                  $:  # Revision of last commit.
-# $LastChangedBy::                        $:  # Author of last commit.
-# $LastChangedDate::                      $:  # Date of last commit.
-
 """
     Provide a mixin class for DesDbi sub-classes meant for testing.
 
@@ -20,8 +15,6 @@
     All rights reserved.
 
 """
-
-__version__ = "$Rev$"
 
 import random
 
