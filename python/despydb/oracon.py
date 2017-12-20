@@ -106,7 +106,7 @@ class OracleConnection (cx_Oracle.Connection):
             cx_Oracle.Connection.__init__(self, user=user, password=pswd,
                                           dsn=dsn, module=_MODULE_NAME)
         except TypeError as exc:
-            if str(exc.message).startswith("'module' is an invalid keyword"):
+            if str(exc).startswith("'module' is an invalid keyword"):
                 warnings.warn('Cannot set module name; cx_Oracle upgrade '
                               'recommended.')
                 cx_Oracle.Connection.__init__(self, user=user, password=pswd,
