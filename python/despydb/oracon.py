@@ -44,7 +44,7 @@ _TYPE_MAP = {cx_Oracle.BINARY: bytearray,
              cx_Oracle.CURSOR: cx_Oracle.CURSOR,
              cx_Oracle.DATETIME: datetime.datetime,
              cx_Oracle.FIXED_CHAR: str,
-             cx_Oracle.FIXED_UNICODE: str,
+             # cx_Oracle.FIXED_UNICODE: str,
              cx_Oracle.INTERVAL: datetime.timedelta,
              cx_Oracle.LOB: bytearray,
              cx_Oracle.LONG_BINARY: bytearray,
@@ -56,7 +56,7 @@ _TYPE_MAP = {cx_Oracle.BINARY: bytearray,
              cx_Oracle.ROWID: bytearray,
              cx_Oracle.STRING: str,
              cx_Oracle.TIMESTAMP: datetime.datetime,
-             cx_Oracle.UNICODE: str
+             # cx_Oracle.UNICODE: str
              }
 
 # Define some symbolic names for oracle error codes to make it clearer what
