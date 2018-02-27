@@ -16,7 +16,6 @@ All rights reserved.
 
 import datetime
 import socket
-import warnings
 
 import cx_Oracle
 
@@ -44,7 +43,7 @@ _TYPE_MAP = {cx_Oracle.BINARY: bytearray,
              cx_Oracle.CURSOR: cx_Oracle.CURSOR,
              cx_Oracle.DATETIME: datetime.datetime,
              cx_Oracle.FIXED_CHAR: str,
-             cx_Oracle.FIXED_UNICODE: str,
+             # cx_Oracle.FIXED_UNICODE: str,
              cx_Oracle.INTERVAL: datetime.timedelta,
              cx_Oracle.LOB: bytearray,
              cx_Oracle.LONG_BINARY: bytearray,
@@ -56,7 +55,7 @@ _TYPE_MAP = {cx_Oracle.BINARY: bytearray,
              cx_Oracle.ROWID: bytearray,
              cx_Oracle.STRING: str,
              cx_Oracle.TIMESTAMP: datetime.datetime,
-             cx_Oracle.UNICODE: str
+             # cx_Oracle.UNICODE: str
              }
 
 # Define some symbolic names for oracle error codes to make it clearer what
@@ -102,17 +101,8 @@ class OracleConnection (cx_Oracle.Connection):
             dsn = ("(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=%s)(PORT=%s))"
                    "(CONNECT_DATA=%s))") % (kwargs['host'], kwargs['port'], cdt)
 
-        try:
-            cx_Oracle.Connection.__init__(self, user=user, password=pswd,
-                                          dsn=dsn, module=_MODULE_NAME)
-        except TypeError as exc:
-            if str(exc.message).startswith("'module' is an invalid keyword"):
-                warnings.warn('Cannot set module name; cx_Oracle upgrade '
-                              'recommended.')
-                cx_Oracle.Connection.__init__(self, user=user, password=pswd,
-                                              dsn=dsn)
-            else:
-                raise
+        cx_Oracle.Connection.__init__(self, user=user, password=pswd, dsn=dsn)
+        self.module = _MODULE_NAME
 
     def cursor(self, fetchsize=None):
         """Return a cx_Oracle Cursor object for operating on the connection.
